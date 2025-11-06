@@ -97,6 +97,13 @@ body {
   @apply flex flex-col items-start! justify-center gap-2 text-sm;
 }
 
+@utility field {
+  @apply flex flex-col gap-2 rounded-lg border p-3;
+  legend {
+    @apply font-semibold;
+  }
+}
+
 .dark {
   --background: oklch(0.145 0 0);
   --foreground: oklch(0.985 0 0);

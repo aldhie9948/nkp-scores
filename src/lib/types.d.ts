@@ -42,3 +42,27 @@ type Team = {
 };
 
 type TeamFormData = Pick<Team, 'name' | 'members'>;
+
+type GameFormData = Pick<Game, 'name'> & {
+  scores: Pick<Score, 'range_start' | 'range_end' | 'value'>[];
+};
+
+type Game = {
+  id: string;
+  name: string;
+  created_at: string;
+  updated_at: string;
+  scores?: Score[];
+  score_history?: any[];
+};
+
+type Score = {
+  id: string;
+  game_id: string;
+  range_start: number;
+  range_end: number;
+  value: number;
+  created_at: string;
+  updated_at: string;
+  game?: Game;
+};

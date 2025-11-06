@@ -3,15 +3,16 @@ import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import errorHandler from '@/src/lib/error-handler';
-import { setLoading, toggleTrigger } from '@/src/lib/jotai';
+import { keywordAtom, setLoading, toggleTrigger } from '@/src/lib/jotai';
 import teamsAPI from '@/src/services/teams';
+import { useAtomValue } from 'jotai';
 import {
   LucideChevronDownCircle,
   LucideChevronUpCircle,
   LucideEdit2,
   LucideTrash2,
 } from 'lucide-react';
-import { useCallback } from 'react';
+import { useCallback, useEffect } from 'react';
 import { Updater, useImmer } from 'use-immer';
 
 type Props = {
@@ -21,6 +22,7 @@ type Props = {
 
 export default function TeamCard({ team, setTeam }: Props) {
   const [open, setOpen] = useImmer(false);
+  const keyword = useAtomValue(keywordAtom);
 
   const removeHandler = useCallback(async () => {
     try {
@@ -35,6 +37,10 @@ export default function TeamCard({ team, setTeam }: Props) {
       }, 1000);
     }
   }, []);
+
+  useEffect(() => {
+    if (!!keyword && !open) setOpen(true);
+  }, [keyword]);
 
   return (
     <Card>

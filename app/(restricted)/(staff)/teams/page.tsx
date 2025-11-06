@@ -1,6 +1,6 @@
 'use client';
 import errorHandler from '@/src/lib/error-handler';
-import { setLoading, triggerAtom } from '@/src/lib/jotai';
+import { keywordAtom, setLoading, triggerAtom } from '@/src/lib/jotai';
 import teamsAPI from '@/src/services/teams';
 import { useAtomValue } from 'jotai';
 import { LucideUserX } from 'lucide-react';
@@ -13,11 +13,12 @@ export default function Page() {
   const [teams, setTeams] = useImmer<Team[]>([]);
   const [team, setTeam] = useImmer<Team | undefined>(undefined);
   const trigger = useAtomValue(triggerAtom);
+  const keyword = useAtomValue(keywordAtom);
 
   useEffect(() => {
     setLoading(true);
     teamsAPI
-      .get()
+      .get({ keyword })
       .then(setTeams)
       .catch(errorHandler)
       .finally(() => {
@@ -25,7 +26,7 @@ export default function Page() {
           setLoading(false);
         }, 1000);
       });
-  }, [trigger]);
+  }, [trigger, keyword]);
 
   return (
     <>
