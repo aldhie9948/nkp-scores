@@ -1,0 +1,32 @@
+@reference "tailwindcss";
+
+.table {
+  @apply w-full;
+  th,
+  td {
+    @apply border;
+  }
+  thead {
+    tr {
+      th {
+        @apply bg-slate-50;
+      }
+      &:first-child th {
+        &:first-child {
+          width: 3rem;
+        }
+      }
+      &:last-child th {
+        min-width: 3rem;
+        max-width: 3rem;
+      }
+    }
+  }
+  tbody {
+    tr {
+      td {
+        @apply text-center tabular-nums;
+      }
+    }
+  }
+}

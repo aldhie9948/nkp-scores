@@ -1,9 +1,7 @@
 import OverlayScroll from '@/components/overlay-scroll';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { InputGroup, InputGroupAddon, InputGroupInput } from '@/components/ui/input-group';
 import { Label } from '@/components/ui/label';
-import { Separator } from '@/components/ui/separator';
 import {
   Sheet,
   SheetContent,
@@ -18,16 +16,7 @@ import StateManager from '@/src/lib/state-manager';
 import gamesAPI from '@/src/services/games';
 import { useAtomValue } from 'jotai';
 import _ from 'lodash';
-import {
-  LucideArrowBigDown,
-  LucideArrowBigUp,
-  LucideBan,
-  LucideCheckCircle,
-  LucideMinus,
-  LucidePlus,
-  LucidePlusSquare,
-  LucideTrash2,
-} from 'lucide-react';
+import { LucideBan, LucideCheckCircle, LucidePlus, LucideTrash2 } from 'lucide-react';
 import { ChangeEvent, SyntheticEvent, useEffect } from 'react';
 import { Updater, useImmer } from 'use-immer';
 
@@ -64,6 +53,7 @@ export default function GamesForm({ game, setGame }: Props) {
       if (!!game) await gamesAPI.update(game.id, form);
       else await gamesAPI.create(form);
       toggleTrigger();
+      reset();
     } catch (err) {
       errorHandler(err);
     } finally {
@@ -85,11 +75,11 @@ export default function GamesForm({ game, setGame }: Props) {
 
   useEffect(() => {
     if (!!game) {
-      const { name, scores } = game;
+      const { name, score } = game;
       setForm((d) => {
         d.name = name;
-        if (scores) {
-          const data = _.map(scores, (a) => _.pick(a, ['range_start', 'range_end', 'value']));
+        if (score) {
+          const data = _.map(score, (a) => _.pick(a, ['range_start', 'range_end', 'value']));
           d.scores = data;
         }
       });
@@ -132,12 +122,12 @@ export default function GamesForm({ game, setGame }: Props) {
                 onClick={() => {
                   setForm((d) => {
                     const data = { range_end: 0, range_start: 0, value: 0 };
-                    d.scores = [...d.scores, data];
-                    _.reverse(d.scores);
+                    const scores = _.orderBy(d.scores, 'value', 'desc');
+                    d.scores = [data, ...scores];
                   });
                 }}
               >
-                <LucidePlusSquare />
+                <LucidePlus />
                 <p>Tambah Skor</p>
               </Button>
               {!form.scores.length ? (

@@ -52,7 +52,7 @@ type Game = {
   name: string;
   created_at: string;
   updated_at: string;
-  scores?: Score[];
+  score?: Score[];
   score_history?: any[];
 };
 

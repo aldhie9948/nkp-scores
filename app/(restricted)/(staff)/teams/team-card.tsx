@@ -7,10 +7,12 @@ import { keywordAtom, setLoading, toggleTrigger } from '@/src/lib/jotai';
 import teamsAPI from '@/src/services/teams';
 import { useAtomValue } from 'jotai';
 import {
-  LucideChevronDownCircle,
-  LucideChevronUpCircle,
+  LucideCheckCircle,
+  LucideChevronDown,
+  LucideChevronUp,
   LucideEdit2,
   LucideTrash2,
+  LucideUsers2,
 } from 'lucide-react';
 import { useCallback, useEffect } from 'react';
 import { Updater, useImmer } from 'use-immer';
@@ -47,15 +49,20 @@ export default function TeamCard({ team, setTeam }: Props) {
       <CardContent>
         <div className="flex flex-col gap-2">
           <button className="flex items-center gap-2" onClick={() => setOpen(!open)}>
-            <h1 className="font-semibold">{team.name}</h1>
+            <LucideUsers2 className="size-8 text-blue-500" />
+            <div className="text-left leading-4">
+              <small className="text-muted-foreground">Nama team:</small>
+              <h1 className="font-semibold">{team.name}</h1>
+            </div>
+            <div className="grow"></div>
             <Badge
-              className="h-6 min-w-6 rounded-full bg-blue-500 px-1 font-mono text-white tabular-nums"
+              className="rounded-full bg-blue-500 px-3 font-mono text-white tabular-nums"
               variant="secondary"
             >
-              {team.members.length}
+              <LucideCheckCircle />
+              <p>{team.members.length} members</p>
             </Badge>
-            <div className="grow"></div>
-            {open ? <LucideChevronUpCircle /> : <LucideChevronDownCircle />}
+            {open ? <LucideChevronUp /> : <LucideChevronDown />}
           </button>
           {open && (
             <>
