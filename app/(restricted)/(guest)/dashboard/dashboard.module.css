@@ -1,0 +1,33 @@
+@reference "tailwindcss";
+
+.table {
+  th,
+  td {
+    @apply border p-2;
+    &:first-child {
+      @apply text-center;
+    }
+  }
+
+  thead {
+    th {
+      @apply bg-slate-100;
+      &:first-child {
+        width: 1rem;
+      }
+      &:last-child,
+      &:nth-last-child(2) {
+        @apply lg:w-32;
+      }
+    }
+  }
+
+  tbody {
+    td {
+      &:last-child,
+      &:nth-last-child(2) {
+        @apply text-right;
+      }
+    }
+  }
+}

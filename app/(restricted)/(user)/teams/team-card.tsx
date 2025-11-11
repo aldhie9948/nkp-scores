@@ -47,7 +47,7 @@ export default function TeamCard({ team, setTeam }: Props) {
   return (
     <Card>
       <CardContent>
-        <div className="flex flex-col gap-2">
+        <div className="flex flex-col gap-4">
           <button className="flex items-center gap-2" onClick={() => setOpen(!open)}>
             <LucideUsers2 className="size-8 text-blue-500" />
             <div className="text-left leading-4">
@@ -66,14 +66,17 @@ export default function TeamCard({ team, setTeam }: Props) {
           </button>
           {open && (
             <>
-              {team.members.map((m, i) => {
-                return (
-                  <div key={m} className="grid grid-cols-12 gap-1">
-                    <p className="tabular-nums">{i + 1}.</p>
-                    <p className="col-span-11">{m}</p>
-                  </div>
-                );
-              })}
+              <div className="flex flex-col gap-2">
+                <p className="font-semibold">Daftar anggota tim:</p>
+                {team.members.map((m, i) => {
+                  return (
+                    <div key={m} className="grid grid-cols-12 gap-1">
+                      <p className="tabular-nums">{i + 1}.</p>
+                      <p className="col-span-11">{m}</p>
+                    </div>
+                  );
+                })}
+              </div>
               <div className="grid grid-cols-2 gap-2">
                 <Confirmation onConfirm={removeHandler}>
                   <Button variant="secondary">

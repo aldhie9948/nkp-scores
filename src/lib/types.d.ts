@@ -2,8 +2,11 @@ type AuthFormData = {
   fullname: string;
 };
 
+type UserRole = 'user' | 'guest' | 'admin';
+
 type User = {
   fullname: string;
+  role: UserRole;
 };
 
 type ParamAPI = {
@@ -12,7 +15,7 @@ type ParamAPI = {
   skip?: string;
   include?: string[];
   omit?: string[];
-  start_data?: string;
+  start_date?: string;
   end_date?: string;
   order_index?: string;
   order_sort?: 'asc' | 'desc';
@@ -38,7 +41,7 @@ type Team = {
   members: string[];
   created_at: string;
   updated_at: string;
-  score_history?: any[];
+  score_history?: ScoreHistory[];
 };
 
 type TeamFormData = Pick<Team, 'name' | 'members'>;
@@ -53,7 +56,7 @@ type Game = {
   created_at: string;
   updated_at: string;
   score?: Score[];
-  score_history?: any[];
+  score_history?: ScoreHistory[];
 };
 
 type Score = {
@@ -65,4 +68,29 @@ type Score = {
   created_at: string;
   updated_at: string;
   game?: Game;
+};
+
+type ScoreHistory = {
+  id: string;
+  game_id: string;
+  game_name: string;
+  team_id: string;
+  team_name: string;
+  team_members: string[];
+  score: number;
+  value: number;
+  ref?: string;
+  created_at: string;
+  updated_at: string;
+  game?: Game;
+  team?: Team;
+  is_deleted: boolean;
+};
+
+type ScoreHistoryFormData = Pick<ScoreHistory, 'game_id' | 'team_id' | 'score' | 'value' | 'ref'>;
+
+type ScoreDashboard = {
+  score: number | null;
+  value: number | null;
+  team_id: string;
 };

@@ -1,6 +1,5 @@
 'use client';
 
-import Loading from '@/components/loading';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -29,7 +28,7 @@ export default function Page() {
 
         await authAPI.login(data);
 
-        const target = data.fullname.toLowerCase() === 'guest' ? '/dashboard' : '/home';
+        const target = asGuest ? '/dashboard' : '/home';
         router.push(target);
 
         setLoading(true);
@@ -38,21 +37,20 @@ export default function Page() {
       } finally {
         setTimeout(() => {
           setLoading(false);
-        }, 3000);
+        }, 1000);
       }
     };
 
   useEffect(() => {
     authAPI.verify().then((data) => {
-      const target = data.fullname.toLowerCase() === 'guest' ? '/dashboard' : '/home';
+      const target = ['guest', 'admin'].includes(data.role) ? '/dashboard' : '/home';
       router.push(target);
     });
   }, []);
   return (
     <div className="flex h-dvh w-full flex-col items-center justify-center gap-4 overflow-hidden">
-      <Loading />
       <form
-        className="flex w-full grow flex-col items-center justify-center gap-4 px-10 2xl:w-4/12"
+        className="flex w-full grow flex-col items-center justify-center gap-4 px-10 lg:w-3/12 lg:border-x"
         onSubmit={handleLogin({ asGuest: false })}
       >
         <LucideSchool size="3rem" className="text-red-500" />

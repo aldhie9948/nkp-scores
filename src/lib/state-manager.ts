@@ -9,22 +9,28 @@ class StateManager {
     return this;
   }
 
-  input<U>(dispatch: Updater<U>, field: keyof U) {
+  input<U>(dispatch: Updater<U>, field: keyof U | null) {
     return (e: ChangeEvent<HTMLInputElement>) => {
-      let value: any = e.target.value;
-      const type = e.target.type;
+      const { value, type } = e.target;
+      let newValue: any = value;
 
       if (type === 'text' && this.pattern) {
         const regex = new RegExp(this.pattern, 'g');
-        value = value.replaceAll(regex, '');
+        newValue = newValue.replaceAll(regex, '');
       } else if (type === 'number') {
-        value = Number(value);
+        // Biarkan kosong tetap string agar user bisa hapus isi input
+        if (value === '') newValue = '';
+        // Hanya ubah ke number jika valid
+        else if (!isNaN(Number(value))) newValue = Number(value);
       }
 
-      dispatch((draft) => {
-        if (field !== null) (draft as any)[field] = value;
-        else draft = value;
-      });
+      if (field) {
+        dispatch((draft) => {
+          (draft as any)[field] = newValue;
+        });
+      } else {
+        dispatch(newValue);
+      }
     };
   }
 }
