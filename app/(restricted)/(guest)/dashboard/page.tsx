@@ -1,7 +1,7 @@
 'use client';
 
 import { cn } from '@/lib/utils';
-import { socket, subSocket } from '@/src/lib/api';
+import { socketSub } from '@/src/lib/api';
 import errorHandler from '@/src/lib/error-handler';
 import { keywordAtom, setLoading, toggleTrigger, triggerAtom } from '@/src/lib/jotai';
 import scoreHistoryAPI from '@/src/services/history';
@@ -52,7 +52,7 @@ export default function Page() {
   }, [trigger, keyword]);
 
   useEffect(() => {
-    const sock = subSocket('score', toggleTrigger);
+    const sock = socketSub('score', toggleTrigger);
     return () => {
       sock.removeAllListeners();
     };
@@ -125,7 +125,7 @@ export default function Page() {
           {restTeams.map((t, i) => {
             const baseNo = !!topThreeTeam.length ? 3 : 1;
             return (
-              <tr>
+              <tr key={i}>
                 <td>{i + baseNo}</td>
                 <td>{t?.name}</td>
                 <td className="font-semibold tabular-nums">

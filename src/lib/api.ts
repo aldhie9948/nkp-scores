@@ -1,10 +1,10 @@
 import axios from 'axios';
-import { io } from 'socket.io-client';
+import { io, Socket } from 'socket.io-client';
 
 export const AUTH_TOKEN_NAME = 'ns_auth_token';
 
 const baseURL = process.env.NEXT_PUBLIC_API || 'http://192.168.10.52:3005/api';
-const socketURL = process.env.NEXT_SOCKET || 'http://192.168.10.52:3005';
+export const socketURL = process.env.NEXT_PUBLIC_SOCKET || 'http://192.168.10.52:3005';
 
 const api = axios.create({ baseURL: baseURL.concat('/nkp-scores') });
 
@@ -30,9 +30,8 @@ export async function sendEmit(event: string) {
   await axios.post(url, { event });
 }
 
-export function subSocket(eventName: string, callback: () => any) {
-  const sock = socket.on(eventName, callback);
-  return sock;
+export function socketSub(event: string, callback: (e: any) => void) {
+  return socket.on(event, callback);
 }
 
 export const socket = io(socketURL, {
