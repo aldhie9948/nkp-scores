@@ -30,6 +30,11 @@ export async function sendEmit(event: string) {
   await axios.post(url, { event });
 }
 
+export function subSocket(eventName: string, callback: () => any) {
+  const sock = socket.on(eventName, callback);
+  return sock;
+}
+
 export const socket = io(socketURL, {
   extraHeaders: {
     'ngrok-skip-browser-warning': 'nkp',

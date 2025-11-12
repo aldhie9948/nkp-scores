@@ -1,7 +1,7 @@
 'use client';
 
 import { cn } from '@/lib/utils';
-import { socket } from '@/src/lib/api';
+import { socket, subSocket } from '@/src/lib/api';
 import errorHandler from '@/src/lib/error-handler';
 import { keywordAtom, setLoading, toggleTrigger, triggerAtom } from '@/src/lib/jotai';
 import scoreHistoryAPI from '@/src/services/history';
@@ -52,10 +52,9 @@ export default function Page() {
   }, [trigger, keyword]);
 
   useEffect(() => {
-    const sub = socket.on('score', toggleTrigger);
-
+    const sock = subSocket('score', toggleTrigger);
     return () => {
-      sub.disconnect();
+      sock.removeAllListeners();
     };
   }, []);
 

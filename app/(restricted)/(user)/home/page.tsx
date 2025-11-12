@@ -1,24 +1,23 @@
 'use client';
 
+import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
+import { Separator } from '@/components/ui/separator';
 import errorHandler from '@/src/lib/error-handler';
 import { keywordAtom, setLoading, triggerAtom } from '@/src/lib/jotai';
+import toastManager from '@/src/lib/toast';
 import gamesAPI from '@/src/services/games';
 import teamsAPI from '@/src/services/teams';
 import { useAtomValue } from 'jotai';
 import _ from 'lodash';
-import { LucideBan, LucidePlusCircle } from 'lucide-react';
-import { useCallback, useEffect, useMemo } from 'react';
+import { LucideBan } from 'lucide-react';
+import { useCallback, useEffect } from 'react';
+import { PiUsersFourDuotone } from 'react-icons/pi';
+import { TbHandFinger } from 'react-icons/tb';
 import Select from 'react-select';
 import { useImmer } from 'use-immer';
 import ScoreForm from './score-form';
-import toastManager from '@/src/lib/toast';
-import { TbHandFinger } from 'react-icons/tb';
-import { PiUsersFourDuotone } from 'react-icons/pi';
-import { Separator } from '@/components/ui/separator';
-import { Badge } from '@/components/ui/badge';
-import { socket } from '@/src/lib/api';
 
 const NS_CURRENT_GAME_KEY = 'ns_current_game';
 
@@ -108,8 +107,8 @@ export default function Page() {
                     variant="outline"
                     className="h-full cursor-pointer"
                     onClick={() => {
-                      setCurrentTeamId(team.id);
                       if (!currentGame) toastManager.error('Silahkan pilih permainan dahulu.');
+                      else setCurrentTeamId(team.id);
                     }}
                   >
                     <Card className="p-4!">
