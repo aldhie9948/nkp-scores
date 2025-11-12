@@ -1,5 +1,6 @@
 'use client';
 import { userAtom } from '@/src/lib/jotai';
+import { allowedAccess } from '@/src/lib/utils';
 import { useAtomValue } from 'jotai';
 import { useRouter } from 'next/navigation';
 import { ReactNode, useEffect } from 'react';
@@ -12,7 +13,7 @@ export default function Layout({ children }: Props) {
   const router = useRouter();
 
   useEffect(() => {
-    if (user && ['user'].includes(user.role)) router.push('/');
+    allowedAccess(['guest', 'admin'], () => router.push('/'));
   }, [user]);
 
   return children;
