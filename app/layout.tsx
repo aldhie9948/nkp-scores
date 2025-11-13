@@ -8,6 +8,7 @@ import { store } from '@/src/lib/jotai';
 import { useEffect } from 'react';
 import Loading from '@/components/loading';
 import { ThemeProvider } from '@/components/theme-provider';
+import { useTheme } from 'next-themes';
 
 const interSans = Inter({
   subsets: ['latin'],
@@ -33,8 +34,11 @@ export default function RootLayout({
     });
   }
 
+  const { forcedTheme, setTheme } = useTheme();
+
   useEffect(() => {
     enableAutoSelectAll();
+    setTheme('light');
   }, []);
 
   return (
@@ -44,7 +48,12 @@ export default function RootLayout({
           <title>NKP Scores</title>
         </head>
         <body className={`${interSans.className} antialiased`}>
-          <ThemeProvider attribute="class" defaultTheme="light" disableTransitionOnChange>
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="light"
+            disableTransitionOnChange
+            enableSystem={false}
+          >
             <Toaster richColors position="top-right" theme="light" />
             <Loading />
             <div className="flex h-dvh flex-col overflow-hidden">{children}</div>
