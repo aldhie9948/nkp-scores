@@ -1,6 +1,7 @@
 'use client';
 
 import { cn } from '@/lib/utils';
+import Select from 'react-select';
 import { socketSub } from '@/src/lib/api';
 import errorHandler from '@/src/lib/error-handler';
 import { keywordAtom, setLoading, toggleTrigger, triggerAtom } from '@/src/lib/jotai';
@@ -12,10 +13,12 @@ import { useCallback, useEffect } from 'react';
 import { FaBookmark, FaTrophy } from 'react-icons/fa';
 import { useImmer } from 'use-immer';
 import styles from './dashboard.module.css';
+import gamesAPI from '@/src/services/games';
 
 export default function Page() {
   const [teams, setTeams] = useImmer<Team[]>([]);
   const [scoreDashboard, setScoreDashboard] = useImmer<ScoreDashboard[]>([]);
+  const [games, setGames] = useImmer<Game[]>([]);
   const keyword = useAtomValue(keywordAtom);
   const trigger = useAtomValue(triggerAtom);
 
@@ -30,14 +33,16 @@ export default function Page() {
     .orderBy((a) => a?.score?.score ?? 0, 'desc')
     .value();
 
-  const fetchAll = useCallback(async (keyword: string) => {
+  const _fetchAll = useCallback(async (keyword: string) => {
     try {
       setLoading(true);
       const tm = teamsAPI.get({ keyword });
       const sd = scoreHistoryAPI.dashboard();
-      const [t, s] = await Promise.all([tm, sd]);
+      const gm = gamesAPI.get();
+      const [t, s, g] = await Promise.all([tm, sd, gm]);
       setTeams(t);
       setScoreDashboard(s);
+      setGames(g);
     } catch (error) {
       errorHandler(error);
     } finally {
@@ -46,6 +51,8 @@ export default function Page() {
       }, 1000);
     }
   }, []);
+
+  const fetchAll = _.debounce(_fetchAll, 1000);
 
   useEffect(() => {
     fetchAll(keyword);
@@ -112,6 +119,14 @@ export default function Page() {
           );
         })}
       </div>
+
+      <div className="flex items-center justify-between gap-2 lg:justify-end">
+        <p className="font-semibold">Game:</p>
+        <div className="grow">
+          <Select />
+        </div>
+      </div>
+
       <table className={cn(styles?.table)}>
         <thead>
           <tr>
@@ -123,7 +138,7 @@ export default function Page() {
         </thead>
         <tbody>
           {restTeams.map((t, i) => {
-            const baseNo = !!topThreeTeam.length ? 3 : 1;
+            const baseNo = !!topThreeTeam.length ? 4 : 1;
             return (
               <tr key={i}>
                 <td>{i + baseNo}</td>
