@@ -37,7 +37,7 @@ export default function TeamsForm({ team, setTeam }: Props) {
   const loading = useAtomValue(loadingAtom);
   const setter = new StateManager();
 
-  const _loadOptions = useCallback(async (keyword: string = '') => {
+  const loadOptions = useCallback(async (keyword: string = '') => {
     try {
       const res = await teamsAPI.find({ keyword });
       const data = _(res)
@@ -61,8 +61,6 @@ export default function TeamsForm({ team, setTeam }: Props) {
       return [];
     }
   }, []);
-
-  const loadOptions = _.debounce(_loadOptions, 1000);
 
   async function submit(e: SyntheticEvent) {
     try {

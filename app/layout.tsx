@@ -7,6 +7,7 @@ import { Provider } from 'jotai';
 import { store } from '@/src/lib/jotai';
 import { useEffect } from 'react';
 import Loading from '@/components/loading';
+import { ThemeProvider } from '@/components/theme-provider';
 
 const interSans = Inter({
   subsets: ['latin'],
@@ -38,14 +39,16 @@ export default function RootLayout({
 
   return (
     <Provider store={store}>
-      <html lang="en" className="light">
+      <html lang="en" suppressHydrationWarning>
         <head>
           <title>NKP Scores</title>
         </head>
         <body className={`${interSans.className} antialiased`}>
-          <Toaster richColors position="top-right" theme="light" />
-          <Loading />
-          <div className="flex h-dvh flex-col overflow-hidden">{children}</div>
+          <ThemeProvider attribute="class" defaultTheme="light" disableTransitionOnChange>
+            <Toaster richColors position="top-right" theme="light" />
+            <Loading />
+            <div className="flex h-dvh flex-col overflow-hidden">{children}</div>
+          </ThemeProvider>
         </body>
       </html>
     </Provider>
