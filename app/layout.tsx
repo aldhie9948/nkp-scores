@@ -42,7 +42,7 @@ export default function RootLayout({
         <head>
           <title>NKP Scores</title>
         </head>
-        <body className={`${interSans.className} antialiased`}>
+        <body className={`${interSans.className} light antialiased`}>
           <Toaster richColors position="top-right" theme="light" />
           <Loading />
           <div className="flex h-dvh flex-col overflow-hidden">{children}</div>
