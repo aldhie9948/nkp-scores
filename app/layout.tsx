@@ -1,14 +1,12 @@
 'use client';
+import Loading from '@/components/loading';
 import { Toaster } from '@/components/ui/sonner';
+import { store } from '@/src/lib/jotai';
+import { Provider } from 'jotai';
 import { Inter } from 'next/font/google';
 import 'overlayscrollbars/overlayscrollbars.css';
-import './globals.css';
-import { Provider } from 'jotai';
-import { store } from '@/src/lib/jotai';
 import { useEffect } from 'react';
-import Loading from '@/components/loading';
-import { ThemeProvider } from '@/components/theme-provider';
-import { useTheme } from 'next-themes';
+import './globals.css';
 
 const interSans = Inter({
   subsets: ['latin'],
@@ -34,30 +32,20 @@ export default function RootLayout({
     });
   }
 
-  const { forcedTheme, setTheme } = useTheme();
-
   useEffect(() => {
     enableAutoSelectAll();
-    setTheme('light');
   }, []);
 
   return (
     <Provider store={store}>
-      <html lang="en" suppressHydrationWarning>
+      <html lang="en" className="light">
         <head>
           <title>NKP Scores</title>
         </head>
         <body className={`${interSans.className} antialiased`}>
-          <ThemeProvider
-            attribute="class"
-            defaultTheme="light"
-            disableTransitionOnChange
-            enableSystem={false}
-          >
-            <Toaster richColors position="top-right" theme="light" />
-            <Loading />
-            <div className="flex h-dvh flex-col overflow-hidden">{children}</div>
-          </ThemeProvider>
+          <Toaster richColors position="top-right" theme="light" />
+          <Loading />
+          <div className="flex h-dvh flex-col overflow-hidden">{children}</div>
         </body>
       </html>
     </Provider>

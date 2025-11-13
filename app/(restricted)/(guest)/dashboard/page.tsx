@@ -120,7 +120,7 @@ export default function Page() {
         })}
       </div>
 
-      <div className="flex items-center justify-between gap-2 lg:justify-end">
+      <div className="flex w-full items-center justify-between gap-2 lg:w-6/12 lg:justify-end">
         <p className="font-semibold">Game:</p>
         <div className="grow">
           <Select />
