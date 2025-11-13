@@ -28,15 +28,10 @@ export default function TeamCard({ team, setTeam }: Props) {
 
   const removeHandler = useCallback(async () => {
     try {
-      setLoading(true);
       await teamsAPI.remove(team.id);
       toggleTrigger();
     } catch (error) {
       errorHandler(error);
-    } finally {
-      setTimeout(() => {
-        setLoading(false);
-      }, 1000);
     }
   }, []);
 

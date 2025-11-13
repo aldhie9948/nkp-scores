@@ -41,19 +41,13 @@ export default function Page() {
     };
 
   useEffect(() => {
-    authAPI
-      .verify()
-      .then((data) => {
-        setMsg('Login successfully. Redirecting..');
-        const target = ['guest', 'admin'].includes(data.role) ? '/dashboard' : '/home';
-        setTimeout(() => {
-          router.push(target);
-        }, 1000);
-      })
-      .catch((error) => {
-        const err = errorHandler(error);
-        setMsg(err);
-      });
+    authAPI.verify().then((data) => {
+      setMsg('Login successfully. Redirecting..');
+      const target = ['guest', 'admin'].includes(data.role) ? '/dashboard' : '/home';
+      setTimeout(() => {
+        router.push(target);
+      }, 1000);
+    });
   }, [trigger]);
   return (
     <div className="flex h-dvh w-full flex-col items-center justify-center gap-4 overflow-hidden">

@@ -15,6 +15,7 @@ import { Button } from '@/components/ui/button';
 import Confirmation from '@/components/confirmation';
 import gamesAPI from '@/src/services/games';
 import { toggleTrigger } from '@/src/lib/jotai';
+import errorHandler from '@/src/lib/error-handler';
 
 type Props = {
   game: Game;
@@ -32,7 +33,7 @@ export default function GameCard({ game, setGame }: Props) {
       await gamesAPI.remove(game.id);
       toggleTrigger();
     } catch (error) {
-      console.log(error);
+      errorHandler(error);
     }
   }
 

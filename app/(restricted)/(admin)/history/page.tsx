@@ -126,13 +126,11 @@ export default function Page() {
                 {scoreHistory.map((item, i) => {
                   const baseNo = (currentPage - 1) * take;
                   const no = i + 1 + baseNo;
-                  const team = item?.team;
-                  const game = item?.game;
                   return (
                     <tr key={i}>
                       <td>{no}</td>
-                      <td>{game?.name}</td>
-                      <td>{team?.name}</td>
+                      <td>{item.game_name}</td>
+                      <td>{item.team_name}</td>
                       <td>{item.score.toLocaleString()}</td>
                       <td>
                         <div className="flex items-center justify-center gap-1">

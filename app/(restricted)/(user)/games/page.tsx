@@ -34,7 +34,7 @@ export default function Page() {
     <>
       <div className="flex grow flex-col p-5 pt-0">
         {!games.length ? (
-          <div className="text-muted-foreground flex min-h-full grow flex-col">
+          <div className="text-muted-foreground flex h-full grow flex-col items-center justify-center">
             <LucideBan />
             <p>Tidak ada permainan terdaftar.</p>
           </div>
