@@ -10,5 +10,6 @@ export default function errorHandler(err: unknown) {
     msg = err.message;
   }
   toastManager.error(msg);
-  return Promise.reject(msg);
+  // return Promise.reject(msg);
+  return msg;
 }

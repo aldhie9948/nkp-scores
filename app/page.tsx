@@ -35,17 +35,25 @@ export default function Page() {
 
         toggleTrigger();
       } catch (error) {
-        errorHandler(error);
+        const err = errorHandler(error);
+        setMsg(err);
       }
     };
 
   useEffect(() => {
-    authAPI.verify().then((data) => {
-      const target = ['guest', 'admin'].includes(data.role) ? '/dashboard' : '/home';
-      setTimeout(() => {
-        router.push(target);
-      }, 1000);
-    });
+    authAPI
+      .verify()
+      .then((data) => {
+        setMsg('Login successfully. Redirecting..');
+        const target = ['guest', 'admin'].includes(data.role) ? '/dashboard' : '/home';
+        setTimeout(() => {
+          router.push(target);
+        }, 1000);
+      })
+      .catch((error) => {
+        const err = errorHandler(error);
+        setMsg(err);
+      });
   }, [trigger]);
   return (
     <div className="flex h-dvh w-full flex-col items-center justify-center gap-4 overflow-hidden">
