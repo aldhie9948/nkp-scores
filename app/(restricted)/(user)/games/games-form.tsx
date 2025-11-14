@@ -36,12 +36,16 @@ export default function GamesForm({ game, setGame }: Props) {
 
   function scoresHandler(index: number, field: keyof GameFormData['scores'][number]) {
     return function (e: ChangeEvent<HTMLInputElement>) {
-      const value = e.target.value;
-      const regex = new RegExp('\D+', 'gi');
-      const formatted = value.replaceAll(regex, '');
+      const { value } = e.target;
+
+      let newValue: any = value;
+
+      if (value === '') newValue = '';
+      else if (!isNaN(Number(value))) newValue = Number(value);
+
       setForm((draft) => {
         const target = draft.scores[index];
-        if (!!target) target[field] = Number(formatted);
+        if (!!target) target[field] = newValue;
       });
     };
   }
