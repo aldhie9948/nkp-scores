@@ -13,6 +13,7 @@ import {
   LucideHome,
   LucideLogOut,
   LucideSearch,
+  LucideUsers,
   LucideUserStar,
 } from 'lucide-react';
 import Link from 'next/link';
