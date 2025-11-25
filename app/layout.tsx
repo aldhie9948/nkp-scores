@@ -1,12 +1,16 @@
 'use client';
+
+// @ts-ignore
+import 'overlayscrollbars/overlayscrollbars.css';
+// @ts-ignore
+import './globals.css';
 import Loading from '@/components/loading';
 import { Toaster } from '@/components/ui/sonner';
 import { store } from '@/src/lib/jotai';
 import { Provider } from 'jotai';
 import { Inter } from 'next/font/google';
-import 'overlayscrollbars/overlayscrollbars.css';
 import { useEffect } from 'react';
-import './globals.css';
+import { ThemeProvider } from '@/components/theme-provider';
 
 const interSans = Inter({
   subsets: ['latin'],
@@ -38,14 +42,21 @@ export default function RootLayout({
 
   return (
     <Provider store={store}>
-      <html lang="en" className="light">
+      <html lang="en">
         <head>
           <title>NKP Scores</title>
         </head>
-        <body className={`${interSans.className} light antialiased`}>
-          <Toaster richColors position="top-right" theme="light" />
-          <Loading />
-          <div className="flex h-dvh flex-col overflow-hidden">{children}</div>
+        <body className={`${interSans.className} antialiased`}>
+          <ThemeProvider
+            attribute="class"
+            defaultTheme="light"
+            enableSystem
+            disableTransitionOnChange
+          >
+            <Toaster richColors position="top-right" theme="light" />
+            <Loading />
+            <div className="flex h-dvh flex-col overflow-hidden">{children}</div>
+          </ThemeProvider>
         </body>
       </html>
     </Provider>

@@ -105,9 +105,7 @@ export default function Page() {
                     <p className="text-4xl font-black tabular-nums">
                       {item.score?.toLocaleString()}
                     </p>
-                    <small className="text-muted-foreground font-light tabular-nums">
-                      ( {item.value?.toLocaleString()} )
-                    </small>
+                    <small className="text-muted-foreground font-light tabular-nums">scores</small>
                   </div>
                 </div>
                 <div className="w-full leading-4">
@@ -125,7 +123,7 @@ export default function Page() {
           <tr>
             <th>#</th>
             <th>Nama Team</th>
-            <th>Poin</th>
+            <th className="hidden">Poin</th>
             <th>Score</th>
           </tr>
         </thead>
@@ -136,7 +134,7 @@ export default function Page() {
               <tr key={i}>
                 <td>{i + baseNo}</td>
                 <td>{t?.name}</td>
-                <td className="font-semibold tabular-nums">
+                <td className="hidden font-semibold tabular-nums">
                   {(t?.score?.value ?? 0).toLocaleString()}
                 </td>
                 <td className="font-semibold tabular-nums">
