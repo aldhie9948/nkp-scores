@@ -1,7 +1,6 @@
 'use client';
 
 import { cn } from '@/lib/utils';
-import Select from 'react-select';
 import { socketSub } from '@/src/lib/api';
 import errorHandler from '@/src/lib/error-handler';
 import { keywordAtom, setLoading, toggleTrigger, triggerAtom } from '@/src/lib/jotai';
@@ -13,12 +12,10 @@ import { useCallback, useEffect } from 'react';
 import { FaBookmark, FaTrophy } from 'react-icons/fa';
 import { useImmer } from 'use-immer';
 import styles from './dashboard.module.css';
-import gamesAPI from '@/src/services/games';
 
 export default function Page() {
   const [teams, setTeams] = useImmer<Team[]>([]);
   const [scoreDashboard, setScoreDashboard] = useImmer<ScoreDashboard[]>([]);
-  const [games, setGames] = useImmer<Game[]>([]);
   const keyword = useAtomValue(keywordAtom);
   const trigger = useAtomValue(triggerAtom);
 
@@ -38,11 +35,9 @@ export default function Page() {
       setLoading(true);
       const tm = teamsAPI.get({ keyword });
       const sd = scoreHistoryAPI.dashboard();
-      const gm = gamesAPI.get();
-      const [t, s, g] = await Promise.all([tm, sd, gm]);
+      const [t, s] = await Promise.all([tm, sd]);
       setTeams(t);
       setScoreDashboard(s);
-      setGames(g);
     } catch (error) {
       errorHandler(error);
     } finally {

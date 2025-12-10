@@ -7,3 +7,9 @@ export function allowedAccess(roles: UserRole[], onError: (e?: any) => any) {
     else onError();
   }
 }
+
+export function teamsSortHandler(team: Team) {
+  const match = team.name.match(/^\d*/g);
+  if (!match) return match;
+  return Number(match[0]);
+}

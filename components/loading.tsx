@@ -7,7 +7,7 @@ export default function Loading() {
   if (loading)
     return (
       <div className="fixed inset-0 z-50">
-        <div className="flex h-full w-full items-center justify-center backdrop-blur-sm">
+        <div className="flex h-full w-full items-center justify-center bg-white/50">
           <Spinner className="size-10" />
         </div>
       </div>

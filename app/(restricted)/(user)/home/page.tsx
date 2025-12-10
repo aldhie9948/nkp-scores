@@ -18,6 +18,8 @@ import { TbHandFinger } from 'react-icons/tb';
 import Select from 'react-select';
 import { useImmer } from 'use-immer';
 import ScoreForm from './score-form';
+import { Ms_Madi } from 'next/font/google';
+import { teamsSortHandler } from '@/src/lib/utils';
 
 const NS_CURRENT_GAME_KEY = 'ns_current_game';
 
@@ -47,7 +49,8 @@ export default function Page() {
         const tm = teamsAPI.get({ include: ['score_history'], keyword });
         const gm = gamesAPI.get({ include: ['score'] });
         const [t, g] = await Promise.all([tm, gm]);
-        setTeams(t);
+
+        setTeams(_.orderBy(t, teamsSortHandler, 'asc'));
         setGames(g);
       } catch (error) {
         errorHandler(error);
@@ -73,8 +76,8 @@ export default function Page() {
 
   return (
     <>
-      <div className="flex grow flex-col gap-4 p-5 pt-0">
-        <div className="space-y-2">
+      <div className="flex grow flex-col gap-4 pt-0">
+        <div className="sticky top-0 space-y-2 px-1.5 backdrop-blur-lg">
           <p className="font-semibold">Pilih Permainan:</p>
           <Select
             options={gamesOpts}
@@ -86,10 +89,10 @@ export default function Page() {
             }}
           />
         </div>
-        <div className="flex h-full grow flex-col gap-2">
+        <div className="flex h-full grow flex-col gap-2 px-5">
           <p className="col-span-2 font-semibold">Daftar Team:</p>
           {!games.length ? (
-            <div className="text-muted-foreground col-span-2 flex flex-col items-center italic">
+            <div className="text-muted-foreground col-span-2 flex grow flex-col items-center gap-2 italic">
               <LucideBan />
               <p>Tidak ada team.</p>
             </div>

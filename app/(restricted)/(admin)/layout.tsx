@@ -16,5 +16,5 @@ export default function Layout({ children }: Props) {
     allowedAccess(['admin'], () => router.push('/'));
   }, [user]);
 
-  return children;
+  return <div className="flex h-full grow flex-col lg:mx-auto lg:w-6/12">{children}</div>;
 }

@@ -4,6 +4,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Separator } from '@/components/ui/separator';
+import { cn } from '@/lib/utils';
 import errorHandler from '@/src/lib/error-handler';
 import { setLoading, toggleTrigger, triggerAtom } from '@/src/lib/jotai';
 import authAPI from '@/src/services/auth';
@@ -18,6 +19,7 @@ export default function Page() {
   const [fullname, setFullname] = useImmer('');
   const trigger = useAtomValue(triggerAtom);
   const [msg, setMsg] = useImmer('');
+  const [isError, setIsError] = useImmer(false);
 
   const handleLogin =
     ({ asGuest = false }: { asGuest: boolean }) =>
@@ -37,6 +39,7 @@ export default function Page() {
       } catch (error) {
         const err = errorHandler(error);
         setMsg(err);
+        setIsError(true);
       }
     };
 
@@ -59,7 +62,13 @@ export default function Page() {
         <h1 className="text-lg font-bold">Welcome to NKP Score App</h1>
         <Separator className="my-2" />
         {!!msg && (
-          <Alert variant="default">
+          <Alert
+            variant={isError ? 'destructive' : 'default'}
+            className={cn(
+              !isError && 'border-green-500 bg-green-500/5 text-green-500',
+              isError && 'border-red-500 bg-red-500/5 text-red-500'
+            )}
+          >
             <LucideInfo />
             <AlertTitle>Information</AlertTitle>
             <AlertDescription>{msg}</AlertDescription>
@@ -73,7 +82,10 @@ export default function Page() {
             type="text"
             placeholder="Masukkan nama lengkap anda.."
             required
-            onFocus={() => setMsg('')}
+            onFocus={() => {
+              setMsg('');
+              setIsError(false);
+            }}
           />
         </Label>
         <Button className="w-full" type="submit">

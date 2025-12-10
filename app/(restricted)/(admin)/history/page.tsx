@@ -14,6 +14,8 @@ import Select from 'react-select';
 import { cn } from '@/lib/utils';
 import Confirmation from '@/components/confirmation';
 import { sendEmit } from '@/src/lib/api';
+import { Checkbox } from '@/components/ui/checkbox';
+import { stat } from 'fs';
 
 const showOpts = _([100, 200, 500])
   .map((a) => {
@@ -29,6 +31,8 @@ export default function Page() {
   const trigger = useAtomValue(triggerAtom);
   const skip = take * (currentPage - 1);
   const [scoreHistory, setScoreHistory] = useImmer<ScoreHistory[]>([]);
+  const [checkAll, setCheckAll] = useImmer(false);
+  const [historyIds, setHistoryIds] = useImmer<string[]>([]);
 
   const fetchAll = useCallback(
     _.debounce(async (params: ParamAPI = {}) => {
@@ -79,6 +83,20 @@ export default function Page() {
     },
   };
 
+  async function batchRemoveHandler() {
+    try {
+      setLoading(true);
+      await scoreHistoryAPI.batchRemove(historyIds);
+      toggleTrigger();
+    } catch (error) {
+      errorHandler(error);
+    } finally {
+      setTimeout(() => {
+        setLoading(false);
+      }, 1000);
+    }
+  }
+
   useEffect(() => {
     fetchAll({
       keyword,
@@ -90,11 +108,17 @@ export default function Page() {
     });
   }, [trigger, keyword, take, currentPage]);
 
+  useEffect(() => {
+    const ids = _.map(scoreHistory, 'id');
+    // xor mengembalikan elemen yang ada di salah satu array
+    setCheckAll(_.xor(historyIds, ids).length === 0);
+  }, [historyIds]);
+
   return (
     <div className="relative flex grow flex-col gap-2 px-5">
       <div className="sticky top-0 flex items-center justify-end gap-2 bg-linear-to-b from-white to-white/50">
         <p className="font-semibold">Show:</p>
-        <div className="w-5/12">
+        <div className="w-5/12 lg:w-2/12">
           <Select
             options={showOpts}
             value={_.find(showOpts, ['value', take])}
@@ -104,12 +128,28 @@ export default function Page() {
             }}
           />
         </div>
+        <Confirmation onConfirm={batchRemoveHandler}>
+          <Button size="icon" variant="destructive" disabled={!historyIds.length}>
+            <LucideTrash />
+          </Button>
+        </Confirmation>
       </div>
       <div className="grow">
         <table className={cn(styles?.table)}>
           <thead>
             <tr>
               <th>#</th>
+              <th>
+                <Checkbox
+                  className="bg-white"
+                  checked={checkAll}
+                  onCheckedChange={(state) => {
+                    setCheckAll(!checkAll);
+                    const value = state ? _.map(scoreHistory, 'id') : [];
+                    setHistoryIds(value);
+                  }}
+                />
+              </th>
               <th>Game</th>
               <th>Team</th>
               <th>Score</th>
@@ -129,6 +169,18 @@ export default function Page() {
                   return (
                     <tr key={i}>
                       <td>{no}</td>
+                      <td>
+                        <Checkbox
+                          className="bg-white"
+                          checked={historyIds.includes(item.id)}
+                          onCheckedChange={(state) => {
+                            setHistoryIds((draft) => {
+                              if (state) return _.concat(draft, [item.id]);
+                              return _.without(draft, item.id);
+                            });
+                          }}
+                        />
+                      </td>
                       <td>{item.game_name}</td>
                       <td>{item.team_name}</td>
                       <td>{item.score.toLocaleString()}</td>

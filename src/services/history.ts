@@ -24,6 +24,13 @@ class ScoreHistoryAPI {
     return res.data as SimpleResponseAPI;
   }
 
+  async batchRemove(ids: string[]) {
+    const url = this.baseUrl.concat('/delete-batch');
+    const res = await api.post(url, ids);
+    toastManager.success('delete');
+    return res.data as SimpleResponseAPI;
+  }
+
   async get(params: ParamAPI = {}) {
     const res = await api.get(this.baseUrl, { params });
     return res.data as ScoreHistory[];
