@@ -18,7 +18,6 @@ import { TbHandFinger } from 'react-icons/tb';
 import Select from 'react-select';
 import { useImmer } from 'use-immer';
 import ScoreForm from './score-form';
-import { Ms_Madi } from 'next/font/google';
 import { teamsSortHandler } from '@/src/lib/utils';
 
 const NS_CURRENT_GAME_KEY = 'ns_current_game';
@@ -77,7 +76,7 @@ export default function Page() {
   return (
     <>
       <div className="flex grow flex-col gap-4 pt-0">
-        <div className="sticky top-0 space-y-2 px-1.5 backdrop-blur-lg">
+        <div className="sticky top-0 space-y-2 px-5 backdrop-blur-lg lg:px-1.5">
           <p className="font-semibold">Pilih Permainan:</p>
           <Select
             options={gamesOpts}
