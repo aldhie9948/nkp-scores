@@ -18,7 +18,6 @@ import { TbHandFinger } from 'react-icons/tb';
 import Select from 'react-select';
 import { useImmer } from 'use-immer';
 import ScoreForm from './score-form';
-import { teamsSortHandler } from '@/src/lib/utils';
 
 const NS_CURRENT_GAME_KEY = 'ns_current_game';
 
@@ -33,6 +32,11 @@ export default function Page() {
       const value = g.id;
       return { label, value } satisfies SelectOptionType;
     })
+    .orderBy((g) => {
+      const match = g.label.match(/^\d{2,}/gi);
+      if (!match) return g.label;
+      return match[0];
+    }, 'asc')
     .value();
 
   const [currentGameId, setCurrentGameId] = useImmer<string | null>(null);
@@ -49,14 +53,12 @@ export default function Page() {
         const gm = gamesAPI.get({ include: ['score'] });
         const [t, g] = await Promise.all([tm, gm]);
 
-        setTeams(_.orderBy(t, teamsSortHandler, 'asc'));
+        setTeams(t);
         setGames(g);
       } catch (error) {
         errorHandler(error);
       } finally {
-        setTimeout(() => {
-          setLoading(false);
-        }, 1000);
+        setLoading(false, 1000);
       }
     }, 1000),
     []

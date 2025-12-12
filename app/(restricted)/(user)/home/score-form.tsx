@@ -72,9 +72,7 @@ export default function ScoreForm({ currentGame, currentTeam, setCurrentTeamId }
     } catch (error) {
       errorHandler(error);
     } finally {
-      setTimeout(() => {
-        setLoading(false);
-      }, 1000);
+      setLoading(false, 1000);
     }
   }
 

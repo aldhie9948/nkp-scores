@@ -44,9 +44,7 @@ export default function Page() {
       } catch (error) {
         errorHandler(error);
       } finally {
-        setTimeout(() => {
-          setLoading(false);
-        }, 1000);
+        setLoading(false, 1000);
       }
     }, 1000),
     []
@@ -62,9 +60,7 @@ export default function Page() {
       } catch (error) {
         errorHandler(error);
       } finally {
-        setTimeout(() => {
-          setLoading(false);
-        }, 1000);
+        setLoading(false, 1000);
       }
     };
   }
@@ -91,9 +87,7 @@ export default function Page() {
     } catch (error) {
       errorHandler(error);
     } finally {
-      setTimeout(() => {
-        setLoading(false);
-      }, 1000);
+      setLoading(false, 1000);
     }
   }
 

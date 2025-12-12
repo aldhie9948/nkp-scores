@@ -5,8 +5,10 @@ export const userAtom = atom<User | null>(null);
 export const triggerAtom = atom<boolean>(false);
 export const keywordAtom = atom<string>('');
 
-export const setLoading = (value: boolean) => {
-  store.set(loadingAtom, value);
+export const setLoading = (value: boolean, time: number = 0) => {
+  setTimeout(() => {
+    store.set(loadingAtom, value);
+  }, time);
 };
 
 store.set(loadingAtom, false);

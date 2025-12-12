@@ -1,15 +1,15 @@
 'use client';
 
-import { useImmer } from 'use-immer';
-import GamesForm from './games-form';
-import { Fragment, useEffect } from 'react';
-import { useAtomValue } from 'jotai';
+import errorHandler from '@/src/lib/error-handler';
 import { keywordAtom, setLoading, triggerAtom } from '@/src/lib/jotai';
 import gamesAPI from '@/src/services/games';
-import errorHandler from '@/src/lib/error-handler';
-import OverlayScroll from '@/components/overlay-scroll';
+import { useAtomValue } from 'jotai';
 import { LucideBan } from 'lucide-react';
+import { useCallback, useEffect } from 'react';
+import { useImmer } from 'use-immer';
 import GameCard from './game-card';
+import GamesForm from './games-form';
+import _ from 'lodash';
 
 export default function Page() {
   const [games, setGames] = useImmer<Game[]>([]);
@@ -17,17 +17,23 @@ export default function Page() {
   const trigger = useAtomValue(triggerAtom);
   const keyword = useAtomValue(keywordAtom);
 
+  const fetchAll = useCallback(
+    _.debounce(async (params: ParamAPI) => {
+      try {
+        setLoading(true);
+        const g = await gamesAPI.get(params);
+        setGames(g);
+      } catch (error) {
+        errorHandler(error);
+      } finally {
+        setLoading(false, 1000);
+      }
+    }, 1000),
+    []
+  );
+
   useEffect(() => {
-    setLoading(true);
-    gamesAPI
-      .get({ keyword, include: ['score'] })
-      .then(setGames)
-      .catch(errorHandler)
-      .finally(() => {
-        setTimeout(() => {
-          setLoading(false);
-        }, 1000);
-      });
+    fetchAll({ keyword, include: ['score'] });
   }, [trigger, keyword]);
 
   return (

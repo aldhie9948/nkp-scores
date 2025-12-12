@@ -4,10 +4,11 @@ import { keywordAtom, setLoading, triggerAtom } from '@/src/lib/jotai';
 import teamsAPI from '@/src/services/teams';
 import { useAtomValue } from 'jotai';
 import { LucideUserX } from 'lucide-react';
-import { useEffect } from 'react';
+import { useCallback, useEffect } from 'react';
 import { useImmer } from 'use-immer';
 import TeamCard from './team-card';
 import TeamsForm from './teams-form';
+import _ from 'lodash';
 
 export default function Page() {
   const [teams, setTeams] = useImmer<Team[]>([]);
@@ -15,17 +16,23 @@ export default function Page() {
   const trigger = useAtomValue(triggerAtom);
   const keyword = useAtomValue(keywordAtom);
 
+  const fetchAll = useCallback(
+    _.debounce(async (params?: ParamAPI) => {
+      try {
+        setLoading(true);
+        const t = await teamsAPI.get(params);
+        setTeams(t);
+      } catch (error) {
+        errorHandler(error);
+      } finally {
+        setLoading(false, 1000);
+      }
+    }, 1000),
+    []
+  );
+
   useEffect(() => {
-    setLoading(true);
-    teamsAPI
-      .get({ keyword })
-      .then(setTeams)
-      .catch(errorHandler)
-      .finally(() => {
-        setTimeout(() => {
-          setLoading(false);
-        }, 1000);
-      });
+    fetchAll({ keyword });
   }, [trigger, keyword]);
 
   return (

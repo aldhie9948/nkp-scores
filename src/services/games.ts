@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import api from '../lib/api';
 import toastManager from '../lib/toast';
 
@@ -26,7 +27,17 @@ class GamesAPI {
 
   async get(params: ParamAPI = {}) {
     const res = await api.get(this.baseUrl, { params });
-    return res.data as Game[];
+    const data = res.data as Game[];
+    return _.orderBy(
+      data,
+      (d) => {
+        const match = d.name.match(/^\d{1,}/g);
+        if (!match) return d.name;
+        const padded = _.padStart(match[0], String(data.length).length, '0');
+        return padded;
+      },
+      'asc'
+    );
   }
 }
 

@@ -72,10 +72,8 @@ export default function TeamsForm({ team, setTeam }: Props) {
     } catch (error) {
       errorHandler(error);
     } finally {
-      setTimeout(() => {
-        setOpen(false);
-        setLoading(false);
-      }, 1000);
+      setLoading(false, 1000);
+      setOpen(false);
     }
   }
 

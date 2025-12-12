@@ -61,10 +61,8 @@ export default function GamesForm({ game, setGame }: Props) {
     } catch (err) {
       errorHandler(err);
     } finally {
-      setTimeout(() => {
-        setLoading(false);
-        setOpen(false);
-      }, 1000);
+      setLoading(false, 1000);
+      setOpen(false);
     }
   }
 

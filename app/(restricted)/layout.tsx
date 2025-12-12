@@ -18,7 +18,7 @@ import {
 } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
-import { ReactNode, useEffect } from 'react';
+import { ReactNode, useCallback, useEffect } from 'react';
 
 const navItems = [
   { icon: LucideHome, label: 'Home', url: '/home', access: ['user'] },
@@ -40,19 +40,20 @@ export default function Layout({ children }: { children: ReactNode }) {
   const pathname = usePathname();
   const router = useRouter();
 
+  const authHandler = useCallback(async () => {
+    try {
+      setLoading(true);
+      await authAPI.verify();
+    } catch (error) {
+      errorHandler(error);
+      router.push('/');
+    } finally {
+      setLoading(false, 1000);
+    }
+  }, []);
+
   useEffect(() => {
-    setLoading(true);
-    authAPI
-      .verify()
-      .catch((err) => {
-        errorHandler(err);
-        router.push('/');
-      })
-      .finally(() => {
-        setTimeout(() => {
-          setLoading(false);
-        }, 1000);
-      });
+    authHandler();
   }, []);
 
   return (
