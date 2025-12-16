@@ -36,7 +36,7 @@ const navItems: Nav[] = [
     access: ['guest', 'admin'],
   },
   { icon: LucideUserStar, label: 'Teams', url: '/teams', access: ['user', 'admin'] },
-  { icon: LucideGamepad2, label: 'Games', url: '/games', access: ['user', 'admin'] },
+  { icon: LucideGamepad2, label: 'Games', url: '/games', access: ['admin'] },
   {
     icon: LucideArrowUpWideNarrow,
     label: 'History',
