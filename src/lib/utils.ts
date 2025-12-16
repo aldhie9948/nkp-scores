@@ -1,4 +1,14 @@
 import { store, userAtom } from './jotai';
+import dayjs from 'dayjs';
+import 'dayjs/locale/id';
+import customParseFormat from 'dayjs/plugin/customParseFormat';
+import inBetween from 'dayjs/plugin/isBetween';
+
+dayjs.locale('id');
+dayjs.extend(customParseFormat);
+dayjs.extend(inBetween);
+
+export const day = dayjs;
 
 export function allowedAccess(roles: UserRole[], onError: (e?: any) => any) {
   const user = store.get(userAtom);

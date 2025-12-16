@@ -1,0 +1,30 @@
+@reference "tailwindcss";
+
+.table {
+  @apply w-full;
+
+  th,
+  td {
+    @apply border p-1 text-xs;
+  }
+
+  thead {
+    th {
+      @apply bg-slate-100 py-2;
+    }
+  }
+
+  tbody {
+    td {
+      &:first-child {
+        @apply text-center;
+      }
+
+      &:nth-last-child(2) {
+        --w: 5rem;
+        min-width: var(--w);
+        @apply text-center text-base font-semibold;
+      }
+    }
+  }
+}

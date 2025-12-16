@@ -11,16 +11,23 @@ import {
   LucideChartNoAxesCombined,
   LucideGamepad2,
   LucideHome,
+  LucideIcon,
   LucideLogOut,
   LucideSearch,
-  LucideUsers,
   LucideUserStar,
 } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { ReactNode, useCallback, useEffect } from 'react';
 
-const navItems = [
+type Nav = {
+  icon: LucideIcon;
+  label: string;
+  url: string;
+  access: UserRole[];
+};
+
+const navItems: Nav[] = [
   { icon: LucideHome, label: 'Home', url: '/home', access: ['user'] },
   {
     icon: LucideChartNoAxesCombined,
@@ -30,7 +37,12 @@ const navItems = [
   },
   { icon: LucideUserStar, label: 'Teams', url: '/teams', access: ['user', 'admin'] },
   { icon: LucideGamepad2, label: 'Games', url: '/games', access: ['user', 'admin'] },
-  { icon: LucideArrowUpWideNarrow, label: 'History', url: '/history', access: ['admin'] },
+  {
+    icon: LucideArrowUpWideNarrow,
+    label: 'History',
+    url: '/history',
+    access: ['admin', 'user', 'guest'],
+  },
   { icon: LucideLogOut, label: 'Logout', url: '/logout', access: ['guest', 'user', 'admin'] },
 ];
 
@@ -80,7 +92,8 @@ export default function Layout({ children }: { children: ReactNode }) {
             'flex flex-col items-center justify-center p-2',
             isActive && 'text-red-500 font-semibold'
           );
-          const allowed = nav.access.includes(user?.role ?? '');
+          const userRole = user?.role;
+          const allowed = userRole && nav.access.includes(userRole);
           if (allowed)
             return (
               <Link href={nav.url} key={i}>

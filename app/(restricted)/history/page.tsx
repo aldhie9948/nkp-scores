@@ -3,7 +3,7 @@
 import { Button } from '@/components/ui/button';
 import styles from './history.module.css';
 import errorHandler from '@/src/lib/error-handler';
-import { keywordAtom, setLoading, toggleTrigger, triggerAtom } from '@/src/lib/jotai';
+import { keywordAtom, setLoading, toggleTrigger, triggerAtom, userAtom } from '@/src/lib/jotai';
 import scoreHistoryAPI from '@/src/services/history';
 import { useAtomValue } from 'jotai';
 import _ from 'lodash';
@@ -16,6 +16,7 @@ import Confirmation from '@/components/confirmation';
 import { sendEmit } from '@/src/lib/api';
 import { Checkbox } from '@/components/ui/checkbox';
 import { stat } from 'fs';
+import { day } from '@/src/lib/utils';
 
 const showOpts = _([100, 200, 500])
   .map((a) => {
@@ -33,6 +34,7 @@ export default function Page() {
   const [scoreHistory, setScoreHistory] = useImmer<ScoreHistory[]>([]);
   const [checkAll, setCheckAll] = useImmer(false);
   const [historyIds, setHistoryIds] = useImmer<string[]>([]);
+  const user = useAtomValue(userAtom);
 
   const fetchAll = useCallback(
     _.debounce(async (params: ParamAPI = {}) => {
@@ -104,15 +106,18 @@ export default function Page() {
 
   useEffect(() => {
     const ids = _.map(scoreHistory, 'id');
+
+    if (!scoreHistory.length) return;
+
     // xor mengembalikan elemen yang ada di salah satu array
     setCheckAll(_.xor(historyIds, ids).length === 0);
   }, [historyIds]);
 
   return (
     <div className="relative flex grow flex-col gap-2 px-5">
-      <div className="sticky top-0 flex items-center justify-end gap-2 bg-linear-to-b from-white to-white/50">
+      <div className="sticky top-0 flex items-center gap-2 bg-linear-to-b from-white to-white/50">
         <p className="font-semibold">Show:</p>
-        <div className="w-5/12 lg:w-2/12">
+        <div className="w-4/12 lg:w-2/12">
           <Select
             options={showOpts}
             value={_.find(showOpts, ['value', take])}
@@ -122,19 +127,22 @@ export default function Page() {
             }}
           />
         </div>
-        <Confirmation onConfirm={batchRemoveHandler}>
-          <Button size="icon" variant="destructive" disabled={!historyIds.length}>
-            <LucideTrash />
-          </Button>
-        </Confirmation>
+        <div className="grow"></div>
+        <div className={cn(user?.role !== 'admin' && 'hidden')}>
+          <Confirmation onConfirm={batchRemoveHandler}>
+            <Button size="icon" variant="destructive" disabled={!historyIds.length}>
+              <LucideTrash />
+            </Button>
+          </Confirmation>
+        </div>
       </div>
       <div className="grow">
         <table className={cn(styles?.table)}>
           <thead>
             <tr>
-              <th>#</th>
               <th>
                 <Checkbox
+                  disabled={user?.role !== 'admin'}
                   className="bg-white"
                   checked={checkAll}
                   onCheckedChange={(state) => {
@@ -144,10 +152,9 @@ export default function Page() {
                   }}
                 />
               </th>
-              <th>Game</th>
               <th>Team</th>
               <th>Score</th>
-              <th></th>
+              <th>Created at</th>
             </tr>
           </thead>
           <tbody>
@@ -158,13 +165,12 @@ export default function Page() {
             ) : (
               <>
                 {scoreHistory.map((item, i) => {
-                  const baseNo = (currentPage - 1) * take;
-                  const no = i + 1 + baseNo;
+                  const createdAt = day(item.created_at).format('DD/MM/YYYY HH:mm:ss');
                   return (
                     <tr key={i}>
-                      <td>{no}</td>
                       <td>
                         <Checkbox
+                          disabled={user?.role !== 'admin'}
                           className="bg-white"
                           checked={historyIds.includes(item.id)}
                           onCheckedChange={(state) => {
@@ -175,16 +181,21 @@ export default function Page() {
                           }}
                         />
                       </td>
-                      <td>{item.game_name}</td>
-                      <td>{item.team_name}</td>
-                      <td>{item.score.toLocaleString()}</td>
                       <td>
-                        <div className="flex items-center justify-center gap-1">
-                          <Confirmation onConfirm={removeHandler(item.id)}>
-                            <Button size="icon" variant="destructive">
-                              <LucideTrash />
-                            </Button>
-                          </Confirmation>
+                        <div className="flex flex-col">
+                          <p className="font-semibold">{item.team_name}</p>
+                          <small className="text-muted-foreground">{item.game_name}</small>
+                        </div>
+                      </td>
+                      <td>
+                        <div className="flex flex-col items-center justify-center">
+                          <p>{item.score.toLocaleString()}</p>
+                        </div>
+                      </td>
+                      <td>
+                        <div className="flex flex-col items-end">
+                          <p>{item?.ref ?? '-'}</p>
+                          <small className="text-muted-foreground">{createdAt}</small>
                         </div>
                       </td>
                     </tr>

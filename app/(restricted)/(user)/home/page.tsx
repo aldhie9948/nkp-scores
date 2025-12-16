@@ -90,7 +90,7 @@ export default function Page() {
             }}
           />
         </div>
-        <div className="flex h-full grow flex-col gap-2 px-5">
+        <div className="flex h-full grow flex-col gap-2 px-5 pb-5">
           <p className="col-span-2 font-semibold">Daftar Team:</p>
           {!games.length ? (
             <div className="text-muted-foreground col-span-2 flex grow flex-col items-center gap-2 italic">
