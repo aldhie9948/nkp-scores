@@ -96,6 +96,7 @@ export default function Page() {
           <Select
             options={gamesOpts}
             value={currentGameOpt}
+            isSearchable={false}
             className="z-20"
             onChange={(ev) => {
               const value = ev?.value ?? null;

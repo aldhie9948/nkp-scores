@@ -120,6 +120,7 @@ export default function Page() {
         <div className="w-full md:w-2/12">
           <Select
             options={showOpts}
+            isSearchable={false}
             value={_.find(showOpts, ['value', take])}
             onChange={(e) => {
               setTake(e?.value ?? 5);
@@ -127,14 +128,16 @@ export default function Page() {
             }}
           />
         </div>
-        <div className="grow"></div>
-        <div className={cn(user?.role !== 'admin' && 'hidden')}>
-          <Confirmation onConfirm={batchRemoveHandler}>
-            <Button size="icon" variant="destructive" disabled={!historyIds.length}>
-              <LucideTrash />
-            </Button>
-          </Confirmation>
-        </div>
+        {user?.role === 'admin' && (
+          <>
+            <div className="grow"></div>
+            <Confirmation onConfirm={batchRemoveHandler}>
+              <Button size="icon" variant="destructive" disabled={!historyIds.length}>
+                <LucideTrash />
+              </Button>
+            </Confirmation>
+          </>
+        )}
       </div>
       <div className="grow">
         <table className={cn(styles?.table)}>
