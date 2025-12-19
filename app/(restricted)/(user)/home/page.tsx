@@ -11,13 +11,15 @@ import gamesAPI from '@/src/services/games';
 import teamsAPI from '@/src/services/teams';
 import { useAtomValue } from 'jotai';
 import _ from 'lodash';
-import { LucideBan } from 'lucide-react';
-import { useCallback, useEffect } from 'react';
+import { LucideBan, LucideCheckCircle, LucideFlag, LucideUsers } from 'lucide-react';
+import { Fragment, useCallback, useEffect, useMemo } from 'react';
 import { PiUsersFourDuotone } from 'react-icons/pi';
 import { TbHandFinger } from 'react-icons/tb';
 import Select from 'react-select';
 import { useImmer } from 'use-immer';
 import ScoreForm from './score-form';
+import { FaUsers } from 'react-icons/fa';
+import { cn } from '@/lib/utils';
 
 const NS_CURRENT_GAME_KEY = 'ns_current_game';
 
@@ -44,6 +46,17 @@ export default function Page() {
   const currentGame = _.find(games, ['id', currentGameId]);
   const currentTeam = _.find(teams, ['id', currentTeamId]);
   const currentGameOpt = _.find(gamesOpts, ['value', currentGameId]);
+  const teamsGroupByCompletion = useMemo(() => {
+    return _(teams)
+      .groupBy((t) => {
+        const isDone = _.some(t?.score_history, { game_id: currentGameId });
+        const key = isDone ? 'DONE' : 'YET';
+        return key;
+      })
+      .toPairs()
+      .reverse()
+      .value();
+  }, [teams]);
 
   const fetchAll = useCallback(
     _.debounce(async (keyword: string) => {
@@ -78,7 +91,7 @@ export default function Page() {
   return (
     <>
       <div className="flex grow flex-col gap-4 pt-0">
-        <div className="sticky top-0 space-y-2 px-5 backdrop-blur-lg lg:px-1.5">
+        <div className="space-y-2 px-5 lg:px-1.5">
           <p className="font-semibold">Pilih Permainan:</p>
           <Select
             options={gamesOpts}
@@ -90,70 +103,92 @@ export default function Page() {
             }}
           />
         </div>
-        <div className="flex h-full grow flex-col gap-2 px-5 pb-5">
-          <p className="col-span-2 font-semibold">Daftar Team:</p>
+        <div className="flex h-full grow flex-col gap-4 px-5 pb-5">
           {!games.length ? (
             <div className="text-muted-foreground col-span-2 flex grow flex-col items-center gap-2 italic">
               <LucideBan />
               <p>Tidak ada team.</p>
             </div>
           ) : (
-            <div className="grid grid-cols-2 gap-2">
-              {teams.map((team, i) => {
-                const scoreHistory = team?.score_history ?? [];
-                const scoreHistoryByGameId = _.filter(scoreHistory, ['game_id', currentGameId]);
-                const score = _.sumBy(scoreHistoryByGameId, 'score');
-                const value = _.sumBy(scoreHistoryByGameId, 'value');
+            <>
+              {teamsGroupByCompletion.map(([key, items]) => {
+                const isDone = key === 'DONE';
+                const label = isDone ? 'Completed Teams' : 'Ongoing Teams';
+                const headerClasses = cn(
+                  'col-span-2 flex items-center gap-1 rounded-lg border p-3 shadow',
+                  isDone && 'bg-green-100 text-green-500 border-green-500',
+                  !isDone && 'bg-blue-100 text-blue-500 border-blue-500'
+                );
                 return (
-                  <Button
-                    key={team.id}
-                    asChild
-                    variant="outline"
-                    className="h-full cursor-pointer"
-                    onClick={() => {
-                      if (!currentGame) toastManager.error('Silahkan pilih permainan dahulu.');
-                      else setCurrentTeamId(team.id);
-                    }}
-                  >
-                    <Card className="p-4!">
-                      <CardContent className="flex w-full flex-col items-center justify-center gap-2 px-0!">
-                        <PiUsersFourDuotone className="size-8 self-center" />
-                        <div className="flex flex-col text-center leading-4">
-                          <small className="text-muted-foreground">Nama Team:</small>
-                          <p className="inline-block font-semibold break-all whitespace-pre-line">
-                            {team.name}
-                          </p>
+                  <div className="grid grid-cols-2 gap-2" key={key}>
+                    <div className={headerClasses}>
+                      <LucideFlag size="1rem" />
+                      <p>{label}</p>
+                    </div>
+                    {items.map((team, i) => {
+                      const scoreHistory = team?.score_history ?? [];
+                      const scoreHistoryByGameId = _.filter(scoreHistory, [
+                        'game_id',
+                        currentGameId,
+                      ]);
+                      const score = _.sumBy(scoreHistoryByGameId, 'score');
+                      const value = _.sumBy(scoreHistoryByGameId, 'value');
+                      return (
+                        <div key={i} className="relative h-full w-full">
+                          {isDone && (
+                            <LucideCheckCircle className="absolute top-2 right-2 z-10 fill-green-100 text-green-500" />
+                          )}
+                          <button
+                            key={team.id}
+                            disabled={isDone}
+                            className="h-full w-full cursor-pointer disabled:cursor-not-allowed disabled:grayscale"
+                            onClick={() => {
+                              if (!currentGame)
+                                toastManager.error('Silahkan pilih permainan dahulu.');
+                              else setCurrentTeamId(team.id);
+                            }}
+                          >
+                            <Card className="p-4!">
+                              <CardContent className="flex w-full flex-col items-center justify-center gap-2 px-0!">
+                                <LucideUsers className="size-6 self-center fill-green-100 text-green-500" />
+                                <div className="flex flex-col text-center leading-4">
+                                  <small className="text-muted-foreground">Nama Team:</small>
+                                  <p className="inline-block text-xs font-semibold break-all whitespace-pre-line">
+                                    {team.name}
+                                  </p>
+                                </div>
+                                <Separator />
+                                <div className="flex items-center justify-center gap-1 text-blue-500">
+                                  <TbHandFinger />
+                                  <small className="text-center">Click to add score</small>
+                                </div>
+                                <div className="hidden flex-col">
+                                  <small className="text-muted-foreground">Nilai:</small>
+                                  <div className="grid grid-cols-2 gap-2">
+                                    <div className="leading-2">
+                                      <p className="text-lg tabular-nums">
+                                        {score.toLocaleString()}
+                                      </p>
+                                      <small>Score</small>
+                                    </div>
+                                    <div className="leading-2">
+                                      <p className="text-lg tabular-nums">
+                                        {value.toLocaleString()}
+                                      </p>
+                                      <small>Poin</small>
+                                    </div>
+                                  </div>
+                                </div>
+                              </CardContent>
+                            </Card>
+                          </button>
                         </div>
-                        <div className="hidden flex-col leading-4">
-                          <small className="text-muted-foreground">Anggota:</small>
-                          <Badge variant="outline" className="border-blue-500 bg-blue-100">
-                            {team.members.length} members
-                          </Badge>
-                        </div>
-                        <Separator />
-                        <div className="flex items-center justify-center gap-1 text-blue-500">
-                          <TbHandFinger />
-                          <small className="text-center">Click to add score</small>
-                        </div>
-                        <div className="hidden flex-col">
-                          <small className="text-muted-foreground">Nilai:</small>
-                          <div className="grid grid-cols-2 gap-2">
-                            <div className="leading-2">
-                              <p className="text-lg tabular-nums">{score.toLocaleString()}</p>
-                              <small>Score</small>
-                            </div>
-                            <div className="leading-2">
-                              <p className="text-lg tabular-nums">{value.toLocaleString()}</p>
-                              <small>Poin</small>
-                            </div>
-                          </div>
-                        </div>
-                      </CardContent>
-                    </Card>
-                  </Button>
+                      );
+                    })}
+                  </div>
                 );
               })}
-            </div>
+            </>
           )}
         </div>
       </div>
