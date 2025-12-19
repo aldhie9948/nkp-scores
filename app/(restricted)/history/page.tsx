@@ -117,7 +117,7 @@ export default function Page() {
     <div className="relative flex grow flex-col gap-2 px-5">
       <div className="sticky top-0 flex items-center gap-2 bg-linear-to-b from-white to-white/50">
         <p className="font-semibold">Show:</p>
-        <div className="w-4/12 lg:w-2/12">
+        <div className="w-full md:w-2/12">
           <Select
             options={showOpts}
             value={_.find(showOpts, ['value', take])}

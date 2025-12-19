@@ -21,8 +21,10 @@
       }
 
       &:nth-last-child(2) {
-        --w: 5rem;
+        --w: 2.5rem;
         min-width: var(--w);
+        max-width: var(--w);
+        width: var(--w);
         @apply text-center text-base font-semibold;
       }
     }
