@@ -136,7 +136,7 @@ export default function Page() {
           </Confirmation>
         </div>
       </div>
-      <div className="grow">
+      <div className="grow p-2">
         <table className={cn(styles?.table)}>
           <thead>
             <tr>
