@@ -56,7 +56,7 @@ export default function Page() {
       .toPairs()
       .reverse()
       .value();
-  }, [teams]);
+  }, [teams, currentGameId]);
 
   const fetchAll = useCallback(
     _.debounce(async (keyword: string) => {
