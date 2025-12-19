@@ -18,7 +18,7 @@ import { TbHandFinger } from 'react-icons/tb';
 import Select from 'react-select';
 import { useImmer } from 'use-immer';
 import ScoreForm from './score-form';
-import { FaUsers } from 'react-icons/fa';
+import { FaBaseballBall, FaBasketballBall, FaUsers } from 'react-icons/fa';
 import { cn } from '@/lib/utils';
 
 const NS_CURRENT_GAME_KEY = 'ns_current_game';
@@ -103,6 +103,13 @@ export default function Page() {
               !!value && window.localStorage.setItem(NS_CURRENT_GAME_KEY, value);
             }}
           />
+          <div className="flex items-center rounded-lg border bg-linear-to-b from-slate-50 to-slate-50/50 p-5">
+            <div className="grow">
+              <small className="text-muted-foreground">Permainan sekarang: </small>
+              <p className="text-lg font-semibold">{currentGame?.name ?? '-'}</p>
+            </div>
+            <FaBasketballBall className="size-8 animate-bounce text-blue-500" />
+          </div>
         </div>
         <div className="flex h-full grow flex-col gap-4 px-5 pb-5">
           {!games.length ? (
