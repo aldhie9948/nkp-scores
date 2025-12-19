@@ -54,7 +54,7 @@ export default function Page() {
         return key;
       })
       .toPairs()
-      .reverse()
+      .orderBy(([key]) => key, 'desc')
       .value();
   }, [teams, currentGameId]);
 
@@ -96,6 +96,7 @@ export default function Page() {
           <Select
             options={gamesOpts}
             value={currentGameOpt}
+            className="z-20"
             onChange={(ev) => {
               const value = ev?.value ?? null;
               setCurrentGameId(value);
@@ -136,7 +137,7 @@ export default function Page() {
                       return (
                         <div key={i} className="relative h-full w-full">
                           {isDone && (
-                            <LucideCheckCircle className="absolute top-2 right-2 z-10 fill-green-100 text-green-500" />
+                            <LucideCheckCircle className="absolute top-2 right-2 fill-green-100 text-green-500" />
                           )}
                           <button
                             key={team.id}
