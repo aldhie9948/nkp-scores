@@ -103,12 +103,12 @@ export default function Page() {
               !!value && window.localStorage.setItem(NS_CURRENT_GAME_KEY, value);
             }}
           />
-          <div className="flex items-center rounded-lg border bg-linear-to-b from-slate-50 to-slate-50/50 p-5">
+          <div className="flex items-center rounded-lg border bg-linear-to-b from-slate-50 to-slate-50/50 p-5 shadow">
             <div className="grow">
               <small className="text-muted-foreground">Permainan sekarang: </small>
               <p className="text-lg font-semibold">{currentGame?.name ?? '-'}</p>
             </div>
-            <FaBasketballBall className="size-8 animate-bounce text-blue-500" />
+            <FaBasketballBall className="size-8 animate-bounce text-blue-500 drop-shadow-2xl" />
           </div>
         </div>
         <div className="flex h-full grow flex-col gap-4 px-5 pb-5">
@@ -123,15 +123,28 @@ export default function Page() {
                 const isDone = key === 'DONE';
                 const label = isDone ? 'Completed Teams' : 'Ongoing Teams';
                 const headerClasses = cn(
-                  'col-span-2 flex items-center gap-1 rounded-lg border p-3 shadow',
                   isDone && 'bg-green-100 text-green-500 border-green-500',
-                  !isDone && 'bg-blue-100 text-blue-500 border-blue-500'
+                  !isDone && 'bg-blue-100 text-blue-500 border-blue-500',
+                  'col-span-2 flex items-center gap-1 rounded-lg border p-3 shadow'
                 );
                 return (
                   <div className="grid grid-cols-2 gap-2" key={key}>
                     <div className={headerClasses}>
                       <LucideFlag size="1rem" />
-                      <p>{label}</p>
+                      <p className="grow">{label}</p>
+                      <Badge
+                        variant="outline"
+                        className={cn('bg-yellow-200 text-yellow-700 shadow')}
+                      >
+                        {items.length} teams
+                      </Badge>
+                      {/* <small
+                        className={cn(
+                          'flex size-6 flex-col items-center justify-center rounded-full border border-yellow-500 bg-yellow-100 p-1 text-center font-semibold text-yellow-700'
+                        )}
+                      >
+                        {items.length}
+                      </small> */}
                     </div>
                     {items.map((team, i) => {
                       const scoreHistory = team?.score_history ?? [];
